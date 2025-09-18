@@ -51,6 +51,8 @@ const feel_like = index !== -1 ? weatherData.hourly.apparent_temperature[index] 
 const Humidity = index !== -1 ? weatherData.hourly.relative_humidity_2m[index] : null;
 
 const info = [{
+  Latitude : latitude,
+  Longitude : longitude,
   city: name,                    
   timezone: timezone,  
   time:formattedTime, 
@@ -77,6 +79,20 @@ console.error("Error fetching weather:", error);
 
 }
 
+function WeatherMap({ latitude, longitude }) {
+  const windyUrl = `https://embed.windy.com/embed2.html?lat=${latitude}&lon=${longitude}&detailLat=${latitude}&detailLon=${longitude}&width=650&height=450&zoom=8&level=surface&overlay=wind&product=ecmwf`;
+return (
+    <iframe
+      width="100%"
+      height="450"
+      src={windyUrl}
+      frameBorder="0"
+      title="Weather Map"
+      className="rounded-md"
+    ></iframe>
+  );
+
+}
 
 
 
@@ -114,7 +130,7 @@ return (
     <div className="p-4">
       {information.map((m) => (
         <div key={m.city} className=" p-4 rounded-md shadow my-2 ">
-         <div className="w-full max-w-4xl mx-auto bg-white shadow rounded-lg overflow-hidden justify-between">
+         <div className="w-full max-w-4xl mx-auto bg-white shadow rounded-lg overflow-hidden justify-between md:h-[300px]">
       {/* Main container with flex direction */}
       <div className="flex flex-col md:flex-row justify-between ">
         
@@ -122,7 +138,7 @@ return (
         <div className="p-4 md:w-1/2 flex flex-col gap-3">
        
           {/* Date and Time */}
-          <p className="text-red-500 text-sm">{m.time}</p>
+          <p className="text-blue-900 text-sm">{m.time}</p>
 
           {/* Location */}
           <h2 className="text-2xl font-semibold">{m.timezone}</h2>
@@ -139,7 +155,7 @@ return (
           </p>
 
           {/* Weather details */}
-          <div className="grid  gap-2 text-sm text-gray-600  text-1xl">
+          <div className="grid  gap-2 text-sm text-gray-700  text-1xl">
             <div> {m.current.windspeed} km/hr <span>
               { getWindDirection(m.current.winddirection)}</span></div>
             <div>Humidity: {m.humidity}%</div>
@@ -148,25 +164,10 @@ return (
         </div>
 
         {/* Right section - Map & forecast */}
-        <div className="relative md:w-1/2">
-          <img
-            src="https://tile.openstreetmap.org/5/16/10.png"
-            alt="map"
-            className="w-full h-64 object-cover"
-          />
+        <div className="relative md:w-1/2 ">
+          <WeatherMap latitude={m.Latitude} longitude={m.Longitude}/>
 
-          {/* Overlay card */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white shadow p-3 rounded">
-            <p className="text-gray-700 text-sm">No precipitation within an hour</p>
-            <div className="flex items-center gap-4 mt-2 text-xs text-gray-600">
-              <span>now<br />03:13am</span>
-              <span>15min<br />03:28am</span>
-              <span>30min<br />03:43am</span>
-              <span>45min<br />03:58am</span>
-              <span>60min<br />04:13am</span>
-              <span className="ml-auto">0mm/h</span>
-            </div>
-          </div>
+         
         </div>
       </div>
     </div>
